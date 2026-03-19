@@ -60,13 +60,11 @@ func ContainsAll[T comparable](have, required []T) bool {
 	return true
 }
 
-func ToMap[TKey comparable, TValue any](ts []struct {
-	Key   TKey
-	Value TValue
-}) map[TKey]TValue {
-	res := make(map[TKey]TValue, len(ts))
+func ToMap[TSrc any, TDstKey comparable, TDstValue any](ts []TSrc, f func(TSrc) (TDstKey, TDstValue)) map[TDstKey]TDstValue {
+	res := make(map[TDstKey]TDstValue, len(ts))
 	for _, t := range ts {
-		res[t.Key] = t.Value
+		key, value := f(t)
+		res[key] = value
 	}
 	return res
 }

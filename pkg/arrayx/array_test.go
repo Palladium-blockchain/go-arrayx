@@ -176,7 +176,12 @@ func TestToMap(t *testing.T) {
 		"three": 3,
 	}
 
-	result := ToMap(input)
+	result := ToMap(input, func(s struct {
+		Key   string
+		Value int
+	}) (string, int) {
+		return s.Key, s.Value
+	})
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, got %v", expected, result)
@@ -190,7 +195,12 @@ func TestToMap_Empty(t *testing.T) {
 	}{}
 	expected := map[int]string{}
 
-	result := ToMap(input)
+	result := ToMap(input, func(s struct {
+		Key   int
+		Value string
+	}) (int, string) {
+		return s.Key, s.Value
+	})
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, got %v", expected, result)
@@ -216,7 +226,12 @@ func TestToMap_DuplicateKeys(t *testing.T) {
 		"two": 2,
 	}
 
-	result := ToMap(input)
+	result := ToMap(input, func(s struct {
+		Key   string
+		Value int
+	}) (string, int) {
+		return s.Key, s.Value
+	})
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %v, got %v", expected, result)
