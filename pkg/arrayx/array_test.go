@@ -160,3 +160,65 @@ func TestFlatten_NestedFlattening(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }
+
+func TestToMap(t *testing.T) {
+	input := []struct {
+		Key   string
+		Value int
+	}{
+		{Key: "one", Value: 1},
+		{Key: "two", Value: 2},
+		{Key: "three", Value: 3},
+	}
+	expected := map[string]int{
+		"one":   1,
+		"two":   2,
+		"three": 3,
+	}
+
+	result := ToMap(input)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+}
+
+func TestToMap_Empty(t *testing.T) {
+	input := []struct {
+		Key   int
+		Value string
+	}{}
+	expected := map[int]string{}
+
+	result := ToMap(input)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+	if len(result) != 0 {
+		t.Errorf("Expected empty map, got length %d", len(result))
+	}
+}
+
+func TestToMap_DuplicateKeys(t *testing.T) {
+	input := []struct {
+		Key   string
+		Value int
+	}{
+		{Key: "one", Value: 1},
+		{Key: "two", Value: 2},
+		{Key: "one", Value: 10},
+	}
+	// The implementation iterates through the slice and assigns Value to Key.
+	// Last one wins.
+	expected := map[string]int{
+		"one": 10,
+		"two": 2,
+	}
+
+	result := ToMap(input)
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, got %v", expected, result)
+	}
+}
